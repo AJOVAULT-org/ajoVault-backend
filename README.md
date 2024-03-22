@@ -5,8 +5,16 @@
 - Mongoose: for database inclusion
 - Nodemon: for hot reload
 - Jest: for testing
+- Bycrpt: for password hashing
+- Passport: for authentication
 
+## Node scripts
+### How to start
+- For hot reload `npm run dev`
+- For starting server `npm run start`
 
+### For testing
+`npm test`
 
 ## CONTRIBUTORS
 Kindly add your name and github link.
