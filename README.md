@@ -17,7 +17,7 @@
 `npm test`
 
 ## CONTRIBUTORS
-Kindly add your name and github link.
-Jhay-Great [https://github.com/Jhay-Great]
+Kindly add your name and github link. <br>
+[Jhay-Great](https://github.com/Jhay-Great)  
 
 **Note**: README would be update periodically during the entire project life cycle.
