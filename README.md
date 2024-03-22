@@ -12,7 +12,7 @@ All push should be main to the develop branch
 
 ## Node scripts
 ### How to start
-- initialize git
+- Initialize git
 - Clone or fork the repo into your local directory
 - Run `npm install` or `npm i`
 - Starts server with hot reload `npm run dev`. <br>
