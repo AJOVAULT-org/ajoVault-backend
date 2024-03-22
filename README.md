@@ -1,17 +1,23 @@
 # AJOVAULT SERVER
+All commits should be pushed to the develop branch.
 
 ## Tech stack & packages 
 - Node & Express: for creating server
 - Mongoose: for database inclusion
 - Nodemon: for hot reload
 - Jest: for testing
-- Bycrpt: for password hashing
+- Bcrypt: for password hashing
 - Passport: for authentication
+- cors: for cross origin resource sharing
 
 ## Node scripts
 ### How to start
-- For hot reload `npm run dev`
-- For starting server `npm run start`
+- Initialize git
+- Clone or fork the repo into your local directory
+- Run `npm install` or `npm i`
+- Starts server with hot reload `npm run dev`. <br>
+Appropriate for development purposes.
+- Starts server without hot reload `npm run start`
 
 ### For testing
 `npm test`
