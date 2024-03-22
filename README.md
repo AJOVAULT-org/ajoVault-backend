@@ -1,12 +1,12 @@
 # AJOVAULT SERVER
-All push should be main to the develop branch
+All commits should be pushed to the develop branch.
 
 ## Tech stack & packages 
 - Node & Express: for creating server
 - Mongoose: for database inclusion
 - Nodemon: for hot reload
 - Jest: for testing
-- Bycrpt: for password hashing
+- Bcrypt: for password hashing
 - Passport: for authentication
 - cors: for cross origin resource sharing
 
