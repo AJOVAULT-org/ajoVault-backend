@@ -10,9 +10,9 @@ const transporter = nodemailer.createTransport({
   // Authentication credentials for Mailtrap
   auth: {
     // Mailtrap username
-    user: 'your-mailtrap-username',
+    user: 'ebe083c3ec1836',
     // Mailtrap password
-    pass: 'your-mailtrap-password'
+    pass: 'd88ebd32b57aa7'
   }
 });
 
