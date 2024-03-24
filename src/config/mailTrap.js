@@ -4,15 +4,15 @@ const nodemailer = require('nodemailer');
 // Creating a transporter object for Mailtrap SMTP settings
 const transporter = nodemailer.createTransport({
   // Hostname for Mailtrap SMTP server
-  host: 'smtp.mailtrap.io',
+  host: process.env.MAIL_CLIENT_HOST,
   // Port number for Mailtrap SMTP server
-  port: 2525,
+  port: process.env.MAIL_CLIENT_PORT,
   // Authentication credentials for Mailtrap
   auth: {
     // Mailtrap username
-    user: 'ebe083c3ec1836',
+    user: process.env.MAIL_CLIENT_USERNAME,
     // Mailtrap password
-    pass: 'd88ebd32b57aa7'
+    pass: process.env.MAIL_CLIENT_PASSWORD
   }
 });
 
