@@ -1,7 +1,7 @@
 const user = require('../models/user');
 const bcrypt = require('bcrypt');
 class User {
-    static Register = async (req, res) => {
+    static async Register (req, res){
         try {
             const existingUser = user.findOne({ email: req.body.email });
             if (existingUser) {
