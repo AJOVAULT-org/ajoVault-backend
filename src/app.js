@@ -14,7 +14,7 @@ const app = express();
 
 app.use(express.json());
 app.use('/example', exampleRoute);
-app.use("api/v1", OtpRouter);
+app.use("/api/v1", OtpRouter);
 
 app.all("*", (req, res) => {
   res.status(400).json({ error: "Wrong method or endpoint, check and try again" });
