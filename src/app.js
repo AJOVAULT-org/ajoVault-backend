@@ -1,8 +1,8 @@
 // node or built-in modules
-const express = require('express');
+const express = require("express");
 
 // custom modules
-const exampleRoute = require('./routes/exampleRoute');
+const exampleRoute = require("./routes/exampleRoute");
 const OtpRouter = require("./routes/otpRoute");
 
 const app = express();
