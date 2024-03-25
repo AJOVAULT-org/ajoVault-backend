@@ -42,6 +42,7 @@ module.exports = {
     "prefer-const": ["error", {
       "destructuring": "any",
       "ignoreReadBeforeAssign": false
-    }]
+    }],
+    "no-undef": "off"
   }
 };

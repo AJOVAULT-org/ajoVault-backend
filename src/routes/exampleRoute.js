@@ -1,10 +1,10 @@
-const express = require('express');
+const express = require("express");
 
 // custom module
-const httpExampleRequest = require('../controllers/exampleController');
+const httpExampleRequest = require("../controllers/exampleController");
 
 const exampleRoute = express.Router();
 
-exampleRoute.get('/', httpExampleRequest)
+exampleRoute.get("/", httpExampleRequest);
 
 module.exports = exampleRoute;

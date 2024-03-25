@@ -8,6 +8,6 @@ const apiHttpStatusCodes = {
   STATUS_CONFLICT: 409,
   STATUS_BAD_REQUEST: 400,
   STATUS_INTERNAL_SERVER_ERROR: 500,
-}
+};
 
 module.exports = apiHttpStatusCodes;

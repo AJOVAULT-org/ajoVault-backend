@@ -13,7 +13,7 @@ const app = express();
 // }))
 
 app.use(express.json());
-app.use('/example', exampleRoute);
+app.use("/example", exampleRoute);
 app.use("/api/v1", OtpRouter);
 
 app.all("*", (req, res) => {
