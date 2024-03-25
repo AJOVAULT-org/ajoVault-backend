@@ -97,7 +97,6 @@ const accessToken = function (userInfo) {
 
     const secretKey = process.env.SECRET_KEY
     
-    console.log(privateKey);
     const token = jwt.sign(payload, secretKey, {expiresIn: '10m'})
     return {
         access_token: token,
