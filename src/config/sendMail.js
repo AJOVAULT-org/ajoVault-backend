@@ -15,19 +15,12 @@ function sendEmail(toName, toEmail, subject, text) {
     text: text
   };
 
-  // Returning a promise for sending the email
-  return new Promise((resolve, reject) => {
-    // Sending the email using the configured transporter
-    transporter.sendMail(mailOptions, (error, info) => {
-      // Handling errors
-      if (error) {
-        // Returning the error to the client
-        reject(error);
-      } else {
-        // Resolving with the information about the sent email
-        resolve(info);
-      }
-    });
+  // send the email using the transporter 
+  transporter.sendMail(mailOptions, (error, info) => {
+    // return errors, if any
+    if (error) {
+      return error;
+    }
   });
 }
 
