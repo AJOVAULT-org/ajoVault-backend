@@ -10,32 +10,31 @@ const path = require('path');
  * @param {string} expirationTime - token validity
  */
 
-/**Basic / symmetric jwt generation */
+/**Symmetric jwt generation */
 const generatingToken = function (userInfo, expirationTime) {
-    // sample of generated payload
     const {userId, fullName, email} = userInfo;
+
+    // generating payload from userInfo
     const payload = {
-        sub: userId,
+        id: userId,
         name: fullName,
         email,
-        iat: Date.now(),
     }
 
     // signing jwt
-    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime})
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime, algorithm: ['RS256']})
     return token;
 }
 
-const refreshToken = function(expirationTime = '1day') {
+const refreshToken = function(userInfo, expirationTime = '1day') {
     return  generatingToken(userInfo, expirationTime);
 }
 
-const accessToken = function(expirationTime = '10m') {
+const accessToken = function(userInfo, expirationTime = '10m') {
     return {
         access_token: generatingToken(userInfo, expirationTime),
         token_type: 'Bearer',
         expires_in: '10m',
-        refresh_token: refreshToken(),
     }
 }
 
