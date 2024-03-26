@@ -1,31 +1,72 @@
-// package initialization
+// packages
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-/** singing jwt
- * @param {string | number} payload - validated user id
- * @param {string} privateKey - RSA secret key generated with crypto
- * @param {object} options - specifying the expiring time
- * @param {err, token} callback - asynchronously handling generation of token
- * 
- * TODO: generate a session Token which would be included in the payload of jwt and used to sign jwt
- * NOTE: access tokens are used to transmit authorization information e.g userId, scopes determined actions allowed
- * access token are used to grant / access protected routes or apis
- * 
- * return = {userId, sessionId, iat, exp}
- * 
+/** 
+ * @param {object} userInfo - validated user id
+ * @param {string} expirationTime - token validity
  */
 
-// sample user claim
-const userInfo = {
-    userId: 234,
-    name: 'John',
-};
+/**Basic / symmetric jwt generation */
+const generatingToken = function (userInfo, expirationTime) {
+    // sample of generated payload
+    const {userId, fullName, email} = userInfo;
+    const payload = {
+        sub: userId,
+        name: fullName,
+        email,
+        iat: Date.now(),
+    }
+
+    // signing jwt
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime})
+    return token;
+}
+
+const refreshToken = function(expirationTime = '1day') {
+    return  generatingToken(userInfo, expirationTime);
+}
+
+const accessToken = function(expirationTime = '10m') {
+    return {
+        access_token: generatingToken(userInfo, expirationTime),
+        token_type: 'Bearer',
+        expires_in: '10m',
+        refresh_token: refreshToken(),
+    }
+}
+
+// TODO: verification
+
+module.exports = {
+    accessToken,
+    refreshToken,
+}
 
 
+
+/** Generating payload & jwt
+ * authenticate the user
+ * is the user a joint payer or a single payer
+ * generate payload based on authentication 
+ * payload is used in signing jwt
+ * payload to consist of {
+ *  sub: userId
+ *  exp: expiration time,
+ *  iat: issue at time,
+ *  audience: endpoint,
+ *  scope: [isAJointPayer, isASinglePayer]
+ * }
+ * returns an object containing {
+ *  access_token: 'ACCESS TOKEN',
+ *  token_type: 'Bearer',
+ *  expires_in: 10000,
+ *  refresh_token: 'REFRESH TOKEN'
+ * }
+ */
 
 /**Generating an asymmetric key */
 // crypto.generateKeyPair('rsa', {
@@ -80,80 +121,4 @@ const userInfo = {
 // // readSystemFiles('privateKey.pem');
 // // readSystemFiles('publicKey.pem');
 
-/**Basic / symmetric jwt generation */
-// generating secret key
-// const secretKey = crypto.randomBytes(32).toString('hex');
-// console.log(secretKey)
-
-// signing jwt - symmetric signing
-// const accessToken = function (userInfo) {
-//     // sample of generated payload
-//     const { userId, name } = userInfo;
-//     const payload = {
-//         sub: userId,
-//         name: name,
-//         iat: Date.now(),
-//     }
-
-//     // const secretKey = process.env.SECRET_KEY
-    
-//     const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '10m'})
-//     return {
-//         access_token: token,
-//         token_type: 'Bearer',
-//         expires_in: '10m',
-//     }
-// }
-
-const generatingToken = function (userInfo, expirationTime) {
-    // sample of generated payload
-    const payload = {
-        sub: userInfo.userId,
-        iat: Date.now(),
-    }
-    console.log(expirationTime)
-    
-    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime})
-    console.log('run...')
-    return token;
-}
-
-const refreshToken = function(expirationTime = '1day') {
-    return  generatingToken(userInfo, expirationTime);
-}
-
-const accessToken = function(expirationTime = '10m') {
-    return {
-        access_token: generatingToken(userInfo, expirationTime),
-        token_type: 'Bearer',
-        expires_in: '10m',
-        refresh_token: refreshToken(),
-    }
-}
-
-// console.log(accessToken());
-
-module.exports = {
-    accessToken,
-    refreshToken,
-}
-
-
-
-
-// authenticate the user
-/**
- * is the user a joint payer or a single payer
- * generate payload based on authentication 
- * payload is used in signing jwt
- * payload to consist of {
- *  subject, issue at, 
- * }
- * returns an object containing {
- *  access_token: 'ACCESS TOKEN'
- *  token_type: 'Bearer',
- *  expires_in: 10000
- *  refresh_token: 'REFRESH TOKEN'
- * }
- */
 
