@@ -85,25 +85,75 @@ const userInfo = {
 // const secretKey = crypto.randomBytes(32).toString('hex');
 // console.log(secretKey)
 
-// signing jwt
-const accessToken = function (userInfo) {
+// signing jwt - symmetric signing
+// const accessToken = function (userInfo) {
+//     // sample of generated payload
+//     const { userId, name } = userInfo;
+//     const payload = {
+//         sub: userId,
+//         name: name,
+//         iat: Date.now(),
+//     }
+
+//     // const secretKey = process.env.SECRET_KEY
+    
+//     const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '10m'})
+//     return {
+//         access_token: token,
+//         token_type: 'Bearer',
+//         expires_in: '10m',
+//     }
+// }
+
+const generatingToken = function (userInfo, expirationTime) {
     // sample of generated payload
     const payload = {
         sub: userInfo.userId,
-        name: userInfo.name,
-        iss: "server",
         iat: Date.now(),
     }
-
-    const secretKey = process.env.SECRET_KEY
+    console.log(expirationTime)
     
-    const token = jwt.sign(payload, secretKey, {expiresIn: '10m'})
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime})
+    console.log('run...')
+    return token;
+}
+
+const refreshToken = function(expirationTime = '1day') {
+    return  generatingToken(userInfo, expirationTime);
+}
+
+const accessToken = function(expirationTime = '10m') {
     return {
-        access_token: token,
+        access_token: generatingToken(userInfo, expirationTime),
         token_type: 'Bearer',
         expires_in: '10m',
+        refresh_token: refreshToken(),
     }
 }
 
-console.log(accessToken(userInfo));
+// console.log(accessToken());
+
+module.exports = {
+    accessToken,
+    refreshToken,
+}
+
+
+
+
+// authenticate the user
+/**
+ * is the user a joint payer or a single payer
+ * generate payload based on authentication 
+ * payload is used in signing jwt
+ * payload to consist of {
+ *  subject, issue at, 
+ * }
+ * returns an object containing {
+ *  access_token: 'ACCESS TOKEN'
+ *  token_type: 'Bearer',
+ *  expires_in: 10000
+ *  refresh_token: 'REFRESH TOKEN'
+ * }
+ */
 
