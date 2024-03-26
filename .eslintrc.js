@@ -38,7 +38,7 @@ module.exports = {
     ],
     "object-shorthand": "error",
     "no-console": "error",
-    "prefer-destructuring": "error",
+    "prefer-destructuring": "warn",
     "prefer-const": ["error", {
       "destructuring": "any",
       "ignoreReadBeforeAssign": false
