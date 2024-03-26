@@ -20,7 +20,6 @@ class User {
             await newUser.save();
         }
         catch(err){
-            // console.error("Error registering user", err);
             return res.status(500).json({
                 message:"Internal Server Error"
             });
