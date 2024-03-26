@@ -9,6 +9,11 @@ const path = require('path');
  * @param {object} userInfo - validated user id
  * @param {string} expirationTime - token validity
  */
+const userInfo = {
+    userId: 4466,
+    fullName: 'jojo folson',
+    email: 'jj@eg.com',
+};
 
 /**Symmetric jwt generation */
 const generatingToken = function (userInfo, expirationTime) {
@@ -22,12 +27,16 @@ const generatingToken = function (userInfo, expirationTime) {
     }
 
     // signing jwt
-    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime, algorithm: ['RS256']})
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime})
     return token;
 }
 
 const refreshToken = function(userInfo, expirationTime = '1day') {
-    return  generatingToken(userInfo, expirationTime);
+    return {
+        refresh_token: generatingToken(userInfo, expirationTime),
+        token_type: 'Bearer',
+        expires_in: '1day',
+    }
 }
 
 const accessToken = function(userInfo, expirationTime = '10m') {
@@ -37,6 +46,9 @@ const accessToken = function(userInfo, expirationTime = '10m') {
         expires_in: '10m',
     }
 }
+
+console.log(accessToken(userInfo));
+console.log(refreshToken(userInfo));
 
 // TODO: verification
 
