@@ -5,7 +5,7 @@ class User {
         try {
             const existingUser = user.findOne({ email: req.body.email });
             if (existingUser) {
-                res.status(409).json({
+                return res.status(409).json({
                     message: "User already exists"
                 });
             }
@@ -20,8 +20,8 @@ class User {
             await newUser.save();
         }
         catch(err){
-            console.error("Error registering user", err);
-            res.status(500).json({
+            // console.error("Error registering user", err);
+            return res.status(500).json({
                 message:"Internal Server Error"
             });
         }
