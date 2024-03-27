@@ -1,22 +1,14 @@
 // packages
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
 
 /** 
  * @param {object} userInfo - validated user id
  * @param {string} expirationTime - token validity
  */
-const userInfo = {
-    userId: 4466,
-    fullName: 'jojo folson',
-    email: 'jj@eg.com',
-};
 
 /**Symmetric jwt generation */
-const generatingToken = function (userInfo, expirationTime) {
+const generateToken = function (userInfo, expirationTime) {
     const {userId, fullName, email} = userInfo;
 
     // generating payload from userInfo
@@ -33,7 +25,7 @@ const generatingToken = function (userInfo, expirationTime) {
 
 const refreshToken = function(userInfo, expirationTime = '1day') {
     return {
-        refresh_token: generatingToken(userInfo, expirationTime),
+        refresh_token: generateToken(userInfo, expirationTime),
         token_type: 'Bearer',
         expires_in: '1day',
     }
@@ -41,14 +33,12 @@ const refreshToken = function(userInfo, expirationTime = '1day') {
 
 const accessToken = function(userInfo, expirationTime = '10m') {
     return {
-        access_token: generatingToken(userInfo, expirationTime),
+        access_token: generateToken(userInfo, expirationTime),
         token_type: 'Bearer',
         expires_in: '10m',
     }
 }
 
-console.log(accessToken(userInfo));
-console.log(refreshToken(userInfo));
 
 // TODO: verification
 
