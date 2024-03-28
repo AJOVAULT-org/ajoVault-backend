@@ -1,6 +1,6 @@
 // Importing nodemailer library for email functionality
 const nodemailer = require('nodemailer');
-
+require("dotenv").config();
 // Creating a transporter object for Mailtrap SMTP settings
 const transporter = nodemailer.createTransport({
   // Hostname for Mailtrap SMTP server

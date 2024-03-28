@@ -15,12 +15,20 @@ function sendEmail(toName, toEmail, subject, text) {
     text: text
   };
 
-  // send the email using the transporter 
-  transporter.sendMail(mailOptions, (error, info) => {
-    // return errors, if any
-    if (error) {
-      return error;
-    }
+  // Return a promise for sending the email
+  return new Promise((resolve, reject) => {
+    // Send the email using the transporter 
+    transporter.sendMail(mailOptions, (error, info) => {
+      // Check if there's an error
+      if (error) {
+        // Reject the promise with the error
+        reject(new Error('Error sending email: ' + error.message));
+      } else {
+        // Resolve the promise with the messageID
+        const successMessage = `Email sent successfully. Message ID: ${info.messageId}`;
+        resolve(successMessage);
+      }
+    });
   });
 }
 
