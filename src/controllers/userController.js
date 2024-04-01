@@ -1,10 +1,10 @@
+const { default: mongoose } = require('mongoose');
 const users = require('../models/user');
 const bcrypt = require('bcrypt');
 class User {
     static async Register(req, res) {
         try {
             const existingUser = await users.findOne({ email: req.body.email });
-            console.log(existingUser);
             if (existingUser) {
                 return res.status(409).json({
                     message: "User already exists"
@@ -61,6 +61,32 @@ class User {
             });
         }
     };
+    static async updateUser(req, res) {
+      
+        try {
+          const {fullName, phoneNumber} = req.body;
+          const {userId} = req.params
+          // Update user details
+          const result = await users.updateOne({  _id: new mongoose.Types.ObjectId(req.params.userId) }, {fullName,phoneNumber});
+      
+          if (result) {
+            return res.status(200).json({
+                message: "Updated Successfully"
+            });
+          } else {
+            return res.status(404).json({
+                message: "Failed to Update",
+                error: true
+            });
+          }
+        } catch (err) {
+          return res.status(500).json({
+            message: "Internal server error",
+            error: true,
+            serverError: err.message
+          });
+        } 
+      }
 }
 
 module.exports = User;
