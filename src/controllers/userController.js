@@ -29,6 +29,28 @@ class User {
             });
         }
     };
+
+    static async Login(req, res) {
+        try {
+            const {email, password} = req.body;
+            const user = await users.findOne({ email: req.body.email });
+            if(!user){
+                return res.status(404).json({
+                    message: "User does not exist",
+                    error: true
+                });
+            }
+            const passwordMatch = bcrypt.compare(req.body.password, user.password);
+            if(!passwordMatch){
+                return res.status(401).json({
+                    error: true,
+                    message: "Invalid credentials"
+                })
+            }
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
 }
 
 module.exports = User;
