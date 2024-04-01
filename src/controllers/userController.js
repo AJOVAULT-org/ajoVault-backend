@@ -29,11 +29,10 @@ class User {
             });
         }
     };
-
     static async Login(req, res) {
         try {
-            const {email, password} = req.body;
-            const user = await users.findOne({ email: req.body.email });
+            const {email, password: candidatePassword} = req.body;
+            const user = await users.findOne({ email: req.body.email }).lean();
             if(!user){
                 return res.status(404).json({
                     message: "User does not exist",
@@ -42,15 +41,26 @@ class User {
             }
             const passwordMatch = bcrypt.compare(req.body.password, user.password);
             if(!passwordMatch){
-                return res.status(401).json({
-                    error: true,
-                    message: "Invalid credentials"
-                })
+                return res.status(404).json({
+                    message: "Invalid Credentials",
+                    error: true
+                });
             }
-        } catch (e) {
-            console.log(e.message)
+            const { password, ...loggedInUser } = user;
+            return res.status(200).json({
+                data: loggedInUser,
+                message: "Login Successful",
+                error: false
+            });
         }
-    }
+        catch (err) {
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: true,
+                serverMessage: err.message
+            });
+        }
+    };
 }
 
 module.exports = User;

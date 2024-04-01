@@ -21,9 +21,6 @@ class User {
             }
         } catch (error) {
             console.error('Error retrieving user details:', error);
-        } finally {
-            // Close the connection
-            // await client.close();
         }
     };
 }
