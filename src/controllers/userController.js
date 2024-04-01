@@ -1,16 +1,17 @@
-const user = require('../models/user');
+const users = require('../models/user');
 const bcrypt = require('bcrypt');
 class User {
-    static async Register (req, res){
+    static async Register(req, res) {
         try {
-            const existingUser = user.findOne({ email: req.body.email });
+            const existingUser = await users.findOne({ email: req.body.email });
+            console.log(existingUser);
             if (existingUser) {
                 return res.status(409).json({
                     message: "User already exists"
                 });
             }
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            const newUser = new user({
+            const newUser = new users({
                 fullName: req.body.fullName,
                 email: req.body.email,
                 phoneNumber: req.body.phoneNumber,
@@ -18,13 +19,16 @@ class User {
                 promoCode: req.body.promoCode
             });
             await newUser.save();
+            return res.status(200).json({
+                message: "Registration Successful"
+            });
         }
-        catch(err){
+        catch (err) {
             return res.status(500).json({
-                message:"Internal Server Error"
+                message: "Internal Server Error"
             });
         }
     };
-} 
+}
 
 module.exports = User;
