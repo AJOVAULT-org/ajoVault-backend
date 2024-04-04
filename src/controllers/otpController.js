@@ -1,5 +1,6 @@
 const redis = require("../config/redis/redisconfig");
 const apiHttpStatusCodes = require("../utils/apiStatusCode");
+const Users = require("../models/user");
 
 class OtpController {
   static async verifyOtp(req, res) {
@@ -13,6 +14,10 @@ class OtpController {
       }
       redis.del(email);
       // --| verify user in the db here i.e find user, update the verified flag to true
+      const user = await Users.findOneAndUpdate({ email }, { email_verified: true });
+
+      if (!user) return res.status(apiHttpStatusCodes.STATUS_BAD_REQUEST).json({ error: true, message: "User not found" });
+      await redis.del(email);
       return res.status(apiHttpStatusCodes.STATUS_OK).json({ error: false, message: "User verified successfully" });
     } catch (error) {
       return res.status(apiHttpStatusCodes.STATUS_INTERNAL_SERVER_ERROR).json({ error: true, message: "Something went wrong", serverMessage: error.message }); 

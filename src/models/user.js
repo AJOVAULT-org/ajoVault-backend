@@ -22,6 +22,14 @@ const userSchema = new Schema({
     promoCode: {
         type: String,
         required: false
+    },
+    email_verified: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    transaction_pin: {
+        type: String
     }
 });
 

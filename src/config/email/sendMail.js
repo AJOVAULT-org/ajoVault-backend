@@ -1,18 +1,18 @@
 // Importing the configured transporter object from the mailTrap.js
-const transporter = require('./mailTrap');
+const transporter = require("../mailTrap");
 
 // Function to send an email using the configured transporter object
 function sendEmail(toName, toEmail, subject, text) {
   // Creating mail options with correct recipient format, subject, and text body 
   const mailOptions = {
     // Sender email address
-    from: '',
+    from: "",
     // Recipient email address
     to: `${toName} <${toEmail}>`,
     // Email subject
-    subject: subject,
+    subject,
     // Email body text
-    text: text
+    text
   };
 
   // Return a promise for sending the email
@@ -22,7 +22,7 @@ function sendEmail(toName, toEmail, subject, text) {
       // Check if there's an error
       if (error) {
         // Reject the promise with the error
-        reject(new Error('Error sending email: ' + error.message));
+        reject(new Error("Error sending email: " + error.message));
       } else {
         // Resolve the promise with the messageID
         const successMessage = `Email sent successfully. Message ID: ${info.messageId}`;
@@ -32,5 +32,18 @@ function sendEmail(toName, toEmail, subject, text) {
   });
 }
 
+const verificationEmail = async (otp, recipientName, recipientEmail) => {
+  const emailBody = `Here is your confirmation OTP ${otp}`;
+  const subject = "Your verification email";
+
+  try {
+    await sendEmail(recipientName, recipientEmail, subject, emailBody);
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 // Exporting the sendEmail function for use in other files
-module.exports = sendEmail;
+module.exports = {
+  verificationEmail
+};

@@ -1,6 +1,6 @@
 // packages
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 
 /** 
  * @param {object} userInfo - validated user id
@@ -8,15 +8,7 @@ const dotenv = require('dotenv').config();
  */
 
 /**Symmetric jwt generation */
-const generateToken = function (userInfo, expirationTime) {
-    const {userId, fullName, email} = userInfo;
-
-    // generating payload from userInfo
-    const payload = {
-        id: userId,
-        name: fullName,
-        email,
-    }
+const generateToken = function (payload, expirationTime) {
 
     // signing jwt
     const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime})
@@ -24,19 +16,11 @@ const generateToken = function (userInfo, expirationTime) {
 }
 
 const refreshToken = function(userInfo, expirationTime = '1day') {
-    return {
-        refresh_token: generateToken(userInfo, expirationTime),
-        token_type: 'Bearer',
-        expires_in: '1day',
-    }
+    return generateToken(userInfo, expirationTime);
 }
 
 const accessToken = function(userInfo, expirationTime = '10m') {
-    return {
-        access_token: generateToken(userInfo, expirationTime),
-        token_type: 'Bearer',
-        expires_in: '10m',
-    }
+    return generateToken(userInfo, expirationTime);
 }
 
 

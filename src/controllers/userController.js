@@ -1,117 +1,145 @@
-const { default: mongoose } = require('mongoose');
-const users = require('../models/user');
-const bcrypt = require('bcrypt');
+const { default: mongoose } = require("mongoose");
+const users = require("../models/user");
+const bcrypt = require("bcrypt");
+const { verificationEmail } = require("../config/email/sendMail");
+const generateOTP = require("../utils/otpGenerator");
+const apiHttpStatusCodes = require("../utils/apiStatusCode");
+const { accessToken, refreshToken } = require("../utils/jwt");
+
 class User {
   static async Register(req, res) {
+    const { fullName, email, password, phoneNumber, promoCode } = req.body;
     try {
-      const existingUser = await users.findOne({ email: req.body.email });
-      if (existingUser) {
-        return res.status(409).json({
-          message: "User already exists"
+      const existingUser = await users.findOne({ email });
+      if (existingUser && existingUser.password) {
+        return res.status(apiHttpStatusCodes.STATUS_CONFLICT).json({
+          message: "User already exists, please login"
         });
       }
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      
+      if (existingUser) return res.status(apiHttpStatusCodes.STATUS_BAD_REQUEST).json({ error: true, message: "User was federated" });
+
+      const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new users({
-        fullName: req.body.fullName,
-        email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
+        fullName,
+        email,
+        phoneNumber,
         password: hashedPassword,
-        promoCode: req.body.promoCode
+        promoCode
       });
+      // --| Before saving a new user, send a mail with verification OTP to the user email
+      const otp = await generateOTP(email);
+      await verificationEmail(otp, fullName, email);
       await newUser.save();
-      return res.status(200).json({
-        message: "Registration Successful"
+      return res.status(apiHttpStatusCodes.STATUS_CREATED).json({
+        error: false,
+        message: "User saved Successfully"
       });
     }
     catch (err) {
-      return res.status(500).json({
+      return res.status(apiHttpStatusCodes.STATUS_INTERNAL_SERVER_ERROR).json({
+        error: true,
+        serverMessage: err.message,
         message: "Internal Server Error"
       });
     }
-  };
+  }
+
   static async Login(req, res) {
     try {
       const { email, password: candidatePassword } = req.body;
-      const user = await users.findOne({ email: req.body.email }).lean();
+      const user = await users.findOne({ email }).lean();
       if (!user) {
-        return res.status(404).json({
+        return res.status(apiHttpStatusCodes.STATUS_NOT_FOUND).json({
           message: "User does not exist",
           error: true
         });
       }
-      const passwordMatch = bcrypt.compare(req.body.password, user.password);
+
+      if (!user.email_verified) return res.status(apiHttpStatusCodes.STATUS_UNAUTHORIZED).json({  error: true, message: "User not verified" });
+
+      const passwordMatch = bcrypt.compare(candidatePassword, user.password);
       if (!passwordMatch) {
-        return res.status(404).json({
+        return res.status(apiHttpStatusCodes.STATUS_NOT_FOUND).json({
           message: "Invalid Credentials",
           error: true
         });
       }
+      // eslint-disable-next-line no-unused-vars
       const { password, ...loggedInUser } = user;
-      return res.status(200).json({
-        data: loggedInUser,
+
+      // --| Generate jwt and encode user details, send jwt to client
+      // --| Might be sending them using cookies later or might just use sessions instead
+      const access_token = accessToken({id: loggedInUser._id, email});
+      const refresh_token = refreshToken({id: loggedInUser._id, email});
+      return res.status(apiHttpStatusCodes.STATUS_OK).json({
+        access_token,
+        refresh_token,
         message: "Login Successful",
         error: false
       });
     }
     catch (err) {
-      return res.status(500).json({
+      return res.status(apiHttpStatusCodes.STATUS_INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
         error: true,
         serverMessage: err.message
       });
     }
-  };
+  }
   static async updateUser(req, res) {
 
     try {
-      const { fullName, phoneNumber } = req.body;
-      const { userId } = req.params
+      const { fullName, phoneNumber, transaction_pin } = req.body;
+      const { userId } = req.params;
       // Update user details
-      const result = await users.updateOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }, { fullName, phoneNumber });
+      const pin = await bcrypt.hash(transaction_pin, 10);
+      const result = await users.findByIdAndUpdate({ _id: userId }, { fullName, phoneNumber, transaction_pin: pin });
 
       if (result) {
-        return res.status(200).json({
+        return res.status(apiHttpStatusCodes.STATUS_OK).json({
+          error: false,
           message: "Updated Successfully"
         });
       } else {
-        return res.status(404).json({
+        return res.status(apiHttpStatusCodes.STATUS_NOT_FOUND).json({
           message: "Failed to Update",
           error: true
         });
       }
     } catch (err) {
-      return res.status(500).json({
+      return res.status(apiHttpStatusCodes.STATUS_INTERNAL_SERVER_ERROR).json({
         message: "Internal server error",
         error: true,
-        serverError: err.message
+        serverError: err.message,
       });
     }
-  };
+  }
   static async deleteUser(req, res) {
 
     try {
       // Delete user account
-      const { userId } = req.body;
-      const result = await users.deleteOne({ _id: new mongoose.Types.ObjectId(req.params.userId) });
+      const { userId } = req.params;
+      const result = await users.findByIdAndDelete({ _id: userId });
 
       if (result) {
-        return res.status(200).json({
+        return res.status(apiHttpStatusCodes.STATUS_OK).json({
           message: "Deleted Successfully"
         });
       } else {
-        return res.status(404).json({
+        return res.status(apiHttpStatusCodes.STATUS_NOT_FOUND).json({
           message: "Unable to delete",
           error: true
         });
       }
     } catch (error) {
-      return res.status(500).json({
+      return res.status(apiHttpStatusCodes.STATUS_INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
         error: true,
-        serverError: error.message
+        serverError: error.message,
       });
     }
-  };
+  }
 }
 
 module.exports = User;
