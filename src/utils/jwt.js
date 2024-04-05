@@ -1,6 +1,6 @@
 // packages
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 /** 
  * @param {object} userInfo - validated user id
@@ -10,26 +10,26 @@ require('dotenv').config();
 /**Symmetric jwt generation */
 const generateToken = function (payload, expirationTime) {
 
-    // signing jwt
-    const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime})
-    return token;
-}
+  // signing jwt
+  const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: expirationTime});
+  return token;
+};
 
-const refreshToken = function(userInfo, expirationTime = '1day') {
-    return generateToken(userInfo, expirationTime);
-}
+const refreshToken = function(userInfo, expirationTime = "1day") {
+  return generateToken(userInfo, expirationTime);
+};
 
-const accessToken = function(userInfo, expirationTime = '10m') {
-    return generateToken(userInfo, expirationTime);
-}
+const accessToken = function(userInfo, expirationTime = "10m") {
+  return generateToken(userInfo, expirationTime);
+};
 
 
 // TODO: verification
 
 module.exports = {
-    accessToken,
-    refreshToken,
-}
+  accessToken,
+  refreshToken,
+};
 
 
 

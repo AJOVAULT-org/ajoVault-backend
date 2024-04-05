@@ -1,4 +1,3 @@
-const { default: mongoose } = require("mongoose");
 const users = require("../models/user");
 const bcrypt = require("bcrypt");
 const { verificationEmail } = require("../config/email/sendMail");
