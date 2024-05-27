@@ -8,28 +8,31 @@ const { accessToken, refreshToken } = require("../utils/jwt");
 class User {
   static async Register(req, res) {
     const { fullName, email, password, phoneNumber, promoCode } = req.body;
-    try {
+    try { 
       const existingUser = await users.findOne({ email });
       if (existingUser && existingUser.password) {
         return res.status(apiHttpStatusCodes.STATUS_CONFLICT).json({
           message: "User already exists, please login"
         });
-      }
+      } 
       
       if (existingUser) return res.status(apiHttpStatusCodes.STATUS_BAD_REQUEST).json({ error: true, message: "User was federated" });
 
       const hashedPassword = await bcrypt.hash(password, 10);
+      const otp = await generateOTP(email);
+
       const newUser = new users({
         fullName,
         email,
         phoneNumber,
         password: hashedPassword,
-        promoCode
+        promoCode,
+        otp, // --| Adding otp to user db, should be updated anytime otp is generated
       });
+      
       // --| Before saving a new user, send a mail with verification OTP to the user email
-      const otp = await generateOTP(email);
       await verificationEmail(otp, fullName, email);
-      await newUser.save();
+      await newUser.save(); 
       return res.status(apiHttpStatusCodes.STATUS_CREATED).json({
         error: false,
         message: "User saved Successfully"
