@@ -20,6 +20,13 @@ module.exports = {
     }
   ],
   "rules": {
+    'import/extensions': 'off',
+    'prettier/prettier': [
+        'error',
+        {
+            endOfLine: 'auto',
+        },
+    ],
     "indent": [
       "error",
       2
