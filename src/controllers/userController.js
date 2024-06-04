@@ -60,7 +60,7 @@ class User {
 
       if (!user.email_verified) return res.status(apiHttpStatusCodes.STATUS_UNAUTHORIZED).json({  error: true, message: "User not verified" });
 
-      const passwordMatch = bcrypt.compare(candidatePassword, user.password);
+      const passwordMatch = await bcrypt.compare(candidatePassword, user.password);
       if (!passwordMatch) {
         return res.status(apiHttpStatusCodes.STATUS_NOT_FOUND).json({
           message: "Invalid Credentials",
