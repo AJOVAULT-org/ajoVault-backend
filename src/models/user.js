@@ -30,7 +30,8 @@ const userSchema = new Schema({
   },
   transaction_pin: {
     type: String
-  }
+  },
+  otp: String,
 });
 
 const user = mongoose.model("user", userSchema);

@@ -1,3 +1,4 @@
+/*eslint linebreak-style: ["error", "windows"]*/
 // node or built-in modules
 const express = require("express");
 

@@ -1,4 +1,4 @@
-const redis = require("../config/redis/redisconfig");
+// const redis = require("../config/redis/redisconfig");
 
 /**
 @param {string} key - The email of user getting the OTP
@@ -16,7 +16,7 @@ const generateOTP = async (key, length = 4, expiry) => {
   const expiration = expiry || 15 * 60;
 
   // --| Store key and value in redis for expiry amount of time
-  await redis.set(key, otp, {EX: expiration});
+  // await redis.set(key, otp, {EX: expiration}); no need for this any more
 
   return otp;
 };
