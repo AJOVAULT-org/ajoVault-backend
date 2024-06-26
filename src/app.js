@@ -15,6 +15,17 @@ const app = express();
 // }))
 
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  try {
+    res.status(200).json({
+      message: "Welcome to ajo-vault backend server, be nice..."
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong, please contact admin" });
+  }
+});
+
 app.use("/example", exampleRoute);
 app.use("/api/v1", OtpRouter);
 app.use("/api/v1", userRouter);
