@@ -5,7 +5,7 @@
 @param {number} length - Length of the OTP
 @param {number} expiry - How long the OTP will last in seconds
 */
-const generateOTP = async (key, length = 4, expiry) => {
+const generateOTP = async (key, length = 4) => {
   let otp = "";
   for (let i = 0; i < length; i++) {
     const randVal = Math.floor(Math.random() * 10);   
@@ -13,7 +13,7 @@ const generateOTP = async (key, length = 4, expiry) => {
   }
 
   // --| Expiry is in seconds
-  const expiration = expiry || 15 * 60;
+  // const expiration = expiry || 15 * 60;
 
   // --| Store key and value in redis for expiry amount of time
   // await redis.set(key, otp, {EX: expiration}); no need for this any more
