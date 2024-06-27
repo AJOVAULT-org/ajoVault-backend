@@ -67,13 +67,11 @@ class User {
           error: true
         });
       }
-      // eslint-disable-next-line no-unused-vars
-      const { password, ...loggedInUser } = user;
 
       // --| Generate jwt and encode user details, send jwt to client
       // --| Might be sending them using cookies later or might just use sessions instead
-      const access_token = accessToken({id: loggedInUser._id, email});
-      const refresh_token = refreshToken({id: loggedInUser._id, email});
+      const access_token = accessToken({id: user._id, email});
+      const refresh_token = refreshToken({id: user._id, email});
       return res.status(apiHttpStatusCodes.STATUS_OK).json({
         access_token,
         refresh_token,
