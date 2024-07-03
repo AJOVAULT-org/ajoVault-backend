@@ -6,8 +6,8 @@ function sendEmail(toName, toEmail, subject, text) {
     const mailOptions = {
     from: process.env.GMAIL_USER,
     to: `${toName} <${toEmail}>`,
-    subject: subject,
-    text: text
+    subject,
+    text,
   };
 
   return new Promise((resolve, reject) => {
